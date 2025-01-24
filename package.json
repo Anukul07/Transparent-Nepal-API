@@ -1,0 +1,11 @@
+{
+  "name": "transparent-nepal-api",
+  "version": "1.0.0",
+  "description": "API for Transparent NEPAL (Node)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
