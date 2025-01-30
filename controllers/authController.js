@@ -8,12 +8,14 @@ const signToken = (id) =>
 
 exports.signup = async (req, res, next) => {
   try {
+    // const profilePicture = req.file ? req.file.filename : null;
     const newUser = await User.create({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
       phoneNumber: req.body.phoneNumber,
+      // profilePicture,
     });
     newUser.password = undefined;
     const token = signToken(newUser._id);
@@ -51,6 +53,15 @@ exports.login = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+exports.uploadImage = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).send({ message: "Please upload a file" });
+  }
+  res.status(200).json({
+    success: true,
+    data: req.file.filename,
+  });
 };
 
 exports.globalErrorHandler = (err, req, res, next) => {
