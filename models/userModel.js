@@ -21,7 +21,10 @@ const userScehma = new mongoose.Schema({
     type: String,
     required: [true, "Please provide your phone number"],
   },
-  profilePhoto: String,
+  profilePicture: {
+    type: String,
+    default: null,
+  },
   password: {
     type: String,
     required: true,
