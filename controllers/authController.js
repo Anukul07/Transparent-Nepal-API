@@ -15,7 +15,7 @@ exports.signup = async (req, res, next) => {
       email: req.body.email,
       password: req.body.password,
       phoneNumber: req.body.phoneNumber,
-      // profilePicture,
+      profilePicture: req.body.profilePicture,
     });
     newUser.password = undefined;
     const token = signToken(newUser._id);
