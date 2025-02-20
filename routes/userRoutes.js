@@ -9,5 +9,9 @@ router.post("/signup", upload, authController.signup);
 router.post("/uploadImage", upload, authController.uploadImage);
 router.post("/login", authController.login);
 router.route("/").get(userController.getAllUsers);
+router
+  .route("/:id")
+  .get(userController.getUserById)
+  .patch(userController.updateUser);
 
 module.exports = router;
