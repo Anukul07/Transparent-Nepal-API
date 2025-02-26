@@ -1,55 +1,111 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (user) =>
+  jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
 exports.signup = async (req, res, next) => {
   try {
-    // const profilePicture = req.file ? req.file.filename : null;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      profilePicture,
+      role,
+    } = req.body;
+
+    // Check if required fields are missing
+    if (!firstName || !lastName || !email || !password || !phoneNumber) {
+      return res.status(400).json({
+        status: "fail",
+        message: "All required fields must be provided.",
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        status: "fail",
+        message: "Email is already registered. Please log in.",
+      });
+    }
+
+    // Create new user
     const newUser = await User.create({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
-      phoneNumber: req.body.phoneNumber,
-      profilePicture: req.body.profilePicture,
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      profilePicture,
+      role,
     });
+
+    // Remove password from response
     newUser.password = undefined;
-    const token = signToken(newUser._id);
+
+    // Generate JWT token
+    const token = signToken(newUser);
+
     res.status(201).json({
       status: "success",
       token,
-      data: {
-        user: newUser,
+      message: "User registered successfully!",
+      user: {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        profilePicture: newUser.profilePicture,
+        role: newUser.role,
       },
     });
   } catch (err) {
-    console.log("Error occurred", err);
+    console.error("Signup error:", err);
+
+    res.status(500).json({
+      status: "error",
+      message:
+        "An unexpected error occurred during signup. Please try again later.",
+      error: err.message,
+    });
   }
 };
 
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    // Check if both email and password are provided
     if (!email || !password) {
-      const error = new Error("Please provide both email and password");
-      error.statusCode = 400;
-      return next(error);
+      return res.status(400).json({
+        status: "fail",
+        message: "Please provide both email and password",
+      });
     }
+
+    // Find user by email and verify password
     const user = await User.findOne({ email }).select("+password");
     if (!user || !(await user.correctPassword(password, user.password))) {
-      const error = new Error("Credentials do not match a user");
-      error.statusCode = 401;
-      return next(error);
+      return res.status(401).json({
+        status: "fail",
+        message: "Invalid email or password",
+      });
     }
-    const token = signToken(user._id);
+
+    // If credentials match, generate token and respond
+    const token = signToken(user);
     res.status(200).json({
       status: "success",
       userId: user._id,
       token,
+      role: user.role,
     });
   } catch (err) {
     next(err);
