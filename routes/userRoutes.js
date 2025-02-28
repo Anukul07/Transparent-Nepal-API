@@ -34,10 +34,19 @@ router.get("/user", verifyToken, (req, res) => {
 router.route("/savedJobs").post(userController.saveJob);
 
 router.route("/getSavedJobs").post(userController.getSavedJobs);
-
+router.route("/appliedJobs").post(userController.applyJob);
 router
   .route("/:id")
-  .get(userController.getUserById)
+  .get(userController.getUserById, verifyToken, authorizeRoles("admin", "user"))
   .put(userController.updateUser);
 
+router
+  .route("/updateWithImage")
+  .patch(
+    uploadUserProfile,
+    userController.updateUserWithImage,
+    verifyToken,
+    authorizeRoles("admin", "user")
+  );
+router.post("/sendUploadEmail", userController.sendUploadEmail);
 module.exports = router;

@@ -23,5 +23,5 @@ router.patch("/:id", jobController.updateJob);
 
 // ✅ Delete a job by ID
 router.delete("/:id", jobController.deleteJob);
-
+// router.get("/search", jobController.searchJobs);
 module.exports = router;

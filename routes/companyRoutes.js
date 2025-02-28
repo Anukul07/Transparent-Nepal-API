@@ -1,6 +1,8 @@
 const express = require("express");
 const companyController = require("../controllers/companyController");
 const { uploadCompanyLogo } = require("../utils/upload"); // Importing only company logo upload middleware
+const verifyToken = require("./../middlewares/authMiddleware");
+const authorizeRoles = require("./../middlewares/roleMiddleware");
 
 const router = express.Router();
 
@@ -8,7 +10,12 @@ const router = express.Router();
 router.post("/", uploadCompanyLogo, companyController.createCompany);
 
 // ✅ Get all companies
-router.get("/", companyController.getAllCompanies);
+router.get(
+  "/",
+  verifyToken,
+  authorizeRoles("user", "admin"),
+  companyController.getAllCompanies
+);
 
 // ✅ Get a single company by ID
 router.get("/:id", companyController.getCompanyById);
