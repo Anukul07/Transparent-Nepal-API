@@ -31,7 +31,17 @@ router.get("/user", verifyToken, (req, res) => {
   });
 });
 
+router
+  .route("/")
+  .get(verifyToken, authorizeRoles("admin"), userController.getAllUsers);
+
 router.route("/savedJobs").post(userController.saveJob);
+router.patch(
+  "/:id/deactivate",
+  verifyToken,
+  authorizeRoles("admin"),
+  userController.deactivateUser
+);
 
 router.route("/getSavedJobs").post(userController.getSavedJobs);
 router.route("/appliedJobs").post(userController.applyJob);

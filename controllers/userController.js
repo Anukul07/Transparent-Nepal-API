@@ -4,6 +4,48 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    res.status(200).json({
+      status: "success",
+      results: users.length,
+      data: {
+        users,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
+
+exports.deactivateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Find the user and update the 'active' status to false
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { active: false },
+      { new: true }
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "User not found" });
+    }
+
+    res.status(200).json({ status: "success", data: { user } });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Something went wrong" });
+  }
+};
+
 // Get user by ID
 exports.getUserById = async (req, res) => {
   try {
