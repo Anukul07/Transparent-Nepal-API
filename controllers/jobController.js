@@ -71,8 +71,12 @@ const getJobById = async (req, res) => {
     const { id } = req.params;
 
     const job = await Job.findById(id).populate(
-      "company",
-      "companyName companyLogo companyRatings" // Populate company details
+      {
+        path: "company",
+        select: "companyName companyLogo companyRatings",
+        strictPopulate: false,
+      }
+      // Populate company details
     );
 
     if (!job) {

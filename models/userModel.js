@@ -42,6 +42,11 @@ const userScehma = new mongoose.Schema(
       default: "user",
       enum: ["admin", "user"],
     },
+    active: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     appliedJobs: [
       {
         type: mongoose.Schema.Types.ObjectId,
