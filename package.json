@@ -17,7 +17,17 @@
     "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
     "path": "^0.12.7",
     "validator": "^13.12.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anukul07/Transparent-Nepal-API.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Anukul07/Transparent-Nepal-API/issues"
+  },
+  "homepage": "https://github.com/Anukul07/Transparent-Nepal-API#readme"
 }

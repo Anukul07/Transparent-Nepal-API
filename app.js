@@ -31,6 +31,10 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/companies", companyRouter);
 app.use("/api/v1/jobs", jobRouter);
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+app.use(
+  "/uploadProfile",
+  express.static(path.join(__dirname, "public/uploads/profiles"))
+);
 app.use(authController.globalErrorHandler);
 
 module.exports = app;
